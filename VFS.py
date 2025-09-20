@@ -4,13 +4,17 @@ import shlex
 import argparse
 
 
+
+
+
 class VFS:
     def __init__(self):
-        self.currentpath = ""
+        self.currentpath = os.getcwd()
         self.name = "VFS"
+
     def process(self):
         while True:
-            cmd = input(f'{self.name}:{self.currentpath}\$').split(" ")
+            cmd = input(f'{self.name}:{self.currentpath}\$ ').split(" ")
             if cmd[0] == "exit":
                 self.exit()
             elif cmd[0] == "ls":
@@ -31,15 +35,13 @@ class VFS:
                 print("unknown command")
 
     def local_variables(self, name: str):
-        print("I local variable", name)
+        print("I local variable ", name)
+
     def ls(self, path: str):
-        print("i ls")
+        pass
 
     def cd(self, path: str):
-        print("i cd")
-
-    def exit(self):
-        exit(0)
+       pass
 
 
 def main():
