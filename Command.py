@@ -41,15 +41,16 @@ class CDCommand(Command):
 
     def ParseArgs(self, s):
         self.passedArgs = []
-        if len(s) != 0 and s[0][0] == "/":
-            self.path = s[0]
-            s = s[1:]
-        if len(s) != 0:
-            if(len(s) > 1):
-                if s not in self.validArgs:
-                    return -1
-                else:
-                    self.passedArgs = s
+        list_of_arguments = s
+        i = 0
+        for arg in list_of_arguments:
+            if i == 0 and arg[0] != "-":
+                self.path = arg
+            elif arg in self.validArgs:
+                self.passedArgs.append(arg)
+            else:
+                print("wrong arguments")
+                return -1
         return 0
 
 class LSCommand(Command):
@@ -73,15 +74,16 @@ class LSCommand(Command):
 
     def ParseArgs(self, s):
         self.passedArgs = []
-        if len(s) != 0 and s[0][0] == "/":
-            self.path = s[0]
-            s = s[1:]
-        if len(s) != 0:
-            if (len(s) > 1):
-                if s not in self.validArgs:
-                    return -1
-                else:
-                    self.passedArgs = s
+        list_of_arguments = s
+        i = 0
+        for arg in list_of_arguments:
+            if i == 0 and arg[0] != "-":
+                self.path = arg
+            elif arg in self.validArgs:
+                self.passedArgs.append(arg)
+            else:
+                print("wrong arguments")
+                return -1
         return 0
 
 class EXITCommand(Command):
