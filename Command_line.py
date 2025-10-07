@@ -2,39 +2,94 @@ import My_System
 from Command import CDCommand, LSCommand, EXITCommand, WRONGCommand
 import os
 
+
 class CommandLine:
     def __init__(self, sys: My_System):
-        self.sys = sys
-        self.id = sys.User + "@" + sys.Comp + ":"
-        self.command = ""
-        self.factory_command = dict()
-        self.factory_command['cd'] = CDCommand(sys)
-        self.factory_command['ls'] = LSCommand(sys)
-        self.factory_command["exit"] = EXITCommand(sys)
-        self.factory_command["wrong"] = WRONGCommand()
-        self.commands = ["cd", "ls", "exit"]
-    def execute(self):
-        self.sys.is_running = True
-        s = ""
-        args = ""
-        while self.sys.is_running:
-            print(self.id, end="")
-            s = input().split()
-            self.command = s[0]
-            args = ""
-            if self.command[0] == "$":
-                value = os.getenv(self.command[0:])
-                print("Value of 'HOME' environment variable :", value)
-                continue
-            if(len(s) != 1):
+        try:
+            self.sys = sys
+            self.id = sys.User + "@" + sys.Comp + ":"
+            self.factory_command = {
+                'cd': CDCommand(sys),
+                'ls': LSCommand(sys),
+                'exit': EXITCommand(sys),
+                'wrong': WRONGCommand()
+            }
+            self.commands = ["cd", "ls", "exit"]
+        except Exception as e:
+            print(f"Error initializing CommandLine: {e}")
+            raise
+
+    def execute_script_command(self, command_line):
+        try:
+            s = command_line.split()
+            if not s:
+                return True
+
+            command = s[0]
+            args = []
+
+            if command[0] == "$":
+                value = os.getenv(command[1:])
+                print(f"Value of '{command[1:]}' environment variable: {value}")
+                return True
+
+            if len(s) > 1:
                 args = s[1:]
 
-
-            if s[0] not in self.commands:
-                self.command = "wrong"
-
-            if self.factory_command[self.command].ParseArgs(args) == -1:
-                pass
+            if command not in self.commands:
+                command_handler = self.factory_command["wrong"]
             else:
-                self.factory_command[self.command].execute()
+                command_handler = self.factory_command[command]
 
+            if command_handler.ParseArgs(args) == -1:
+                print("Error: Invalid arguments")
+                return False
+            else:
+                command_handler.execute()
+                return True
+
+        except Exception as e:
+            print(f"Error executing command '{command_line}': {e}")
+            return False
+
+    def execute(self):
+        self.sys.is_running = True
+
+        while self.sys.is_running:
+            try:
+                print(self.id, end=" ")
+                user_input = input().strip()
+                if not user_input:
+                    continue
+
+                s = user_input.split()
+                command = s[0]
+                args = []
+
+                if command[0] == "$":
+                    value = os.getenv(command[1:])
+                    print(f"Value of '{command[1:]}' environment variable: {value}")
+                    continue
+
+                if len(s) > 1:
+                    args = s[1:]
+
+
+                if command not in self.commands:
+                    command_handler = self.factory_command["wrong"]
+                else:
+                    command_handler = self.factory_command[command]
+
+                if command_handler.ParseArgs(args) == -1:
+                    print("Error: Invalid arguments")
+                else:
+                    command_handler.execute()
+
+            except KeyboardInterrupt:
+                print("\nExiting...")
+                self.sys.exit()
+            except EOFError:
+                print("\nExiting...")
+                self.sys.exit()
+            except Exception as e:
+                print(f"Error: {e}")

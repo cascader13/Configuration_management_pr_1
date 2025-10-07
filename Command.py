@@ -1,11 +1,8 @@
 import abc
-
 import My_System
 
 
 class Command(abc.ABC):
-
-
     def __init__(self):
         self.validArgs = []
         self.passedArgs = []
@@ -21,95 +18,101 @@ class Command(abc.ABC):
 
 
 class CDCommand(Command):
-
     def __init__(self, sys: My_System):
-        self.validArgs = ["-c", "-d"] # пока примерные аргументы. При реализации команд список изменится
+        super().__init__()
+        self.validArgs = ["-c", "-d"]
         self.passedArgs = []
         self.sys = sys
         self.path = ""
 
-
     def execute(self):
-        print("i am ls\n")
+        print("CD command executed")
         if self.path == "":
-            print("")
+            print("No path specified - staying in current directory")
         elif self.sys.is_path(self.path):
-            print("path is Correct")
+            print(f"Changing directory to: {self.path}")
         else:
-            print("path is Uncorrect")
-        print("Arguments", self.passedArgs)
+            print(f"Invalid path: {self.path}")
+        if self.passedArgs:
+            print(f"Arguments: {self.passedArgs}")
 
     def ParseArgs(self, s):
         self.passedArgs = []
-        list_of_arguments = s
-        i = 0
-        for arg in list_of_arguments:
-            if i == 0 and arg[0] != "-":
+        self.path = ""
+
+        for arg in s:
+            if arg[0] != "-":  # This is a path, not an option
                 self.path = arg
             elif arg in self.validArgs:
                 self.passedArgs.append(arg)
             else:
-                print("wrong arguments")
+                print(f"Wrong argument: {arg}")
                 return -1
         return 0
+
 
 class LSCommand(Command):
-
     def __init__(self, sys: My_System):
-        self.validArgs = ["-l", "-s"]  # пока примерные аргументы. При реализации команд список изменится
+        super().__init__()
+        self.validArgs = ["-l", "-s"]
         self.passedArgs = []
         self.sys = sys
         self.path = ""
 
-
     def execute(self):
-        print("i am ls\n")
+        print("LS command executed")
         if self.path == "":
-            print("")
+            print("Listing current directory")
         elif self.sys.is_path(self.path):
-            print("path is Correct")
+            print(f"Listing directory: {self.path}")
         else:
-            print("path is Uncorrect")
-        print("Arguments", self.passedArgs)
+            print(f"Invalid path: {self.path}")
+        if self.passedArgs:
+            print(f"Arguments: {self.passedArgs}")
+        print("file1.txt  file2.txt  directory1/")
 
     def ParseArgs(self, s):
         self.passedArgs = []
-        list_of_arguments = s
-        i = 0
-        for arg in list_of_arguments:
-            if i == 0 and arg[0] != "-":
+        self.path = ""
+
+        for arg in s:
+            if arg[0] != "-":
                 self.path = arg
             elif arg in self.validArgs:
                 self.passedArgs.append(arg)
             else:
-                print("wrong arguments")
+                print(f"Wrong argument: {arg}")
                 return -1
         return 0
 
-class EXITCommand(Command):
 
+class EXITCommand(Command):
     def __init__(self, sys: My_System):
+        super().__init__()
         self.validArgs = []
         self.passedArgs = []
         self.sys = sys
 
     def execute(self):
+        print("Exiting emulator...")
         self.sys.exit()
 
     def ParseArgs(self, s):
         self.passedArgs = []
         if len(s) != 0:
+            print("Error: exit command takes no arguments")
             return -1
         return 0
 
-class WRONGCommand(Command):
 
+class WRONGCommand(Command):
     def __init__(self):
+        super().__init__()
         self.validArgs = []
         self.passedArgs = []
 
     def execute(self):
-        print("Wrong command")
+        print("Error: Wrong command. Available commands: cd, ls, exit")
 
     def ParseArgs(self, s):
         return 0

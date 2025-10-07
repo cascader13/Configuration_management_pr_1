@@ -1,0 +1,3 @@
+vfs_path = "./vfs_storage"
+
+startup_script = "./startup.txt"
