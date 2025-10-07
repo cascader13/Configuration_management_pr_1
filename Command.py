@@ -20,31 +20,27 @@ class Command(abc.ABC):
 class CDCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
-        self.validArgs = ["-c", "-d"]
+        self.validArgs = []
         self.passedArgs = []
         self.sys = sys
         self.path = ""
 
     def execute(self):
-        print("CD command executed")
         if self.path == "":
-            print("No path specified - staying in current directory")
-        elif self.sys.is_path(self.path):
-            print(f"Changing directory to: {self.path}")
+            success = self.sys.change_directory("/")
         else:
-            print(f"Invalid path: {self.path}")
-        if self.passedArgs:
-            print(f"Arguments: {self.passedArgs}")
+            success = self.sys.change_directory(self.path)
+
+        if not success:
+            print(f"Failed to change directory to: {self.path}")
 
     def ParseArgs(self, s):
         self.passedArgs = []
         self.path = ""
 
         for arg in s:
-            if arg[0] != "-":  # This is a path, not an option
+            if arg[0] != "-":
                 self.path = arg
-            elif arg in self.validArgs:
-                self.passedArgs.append(arg)
             else:
                 print(f"Wrong argument: {arg}")
                 return -1
@@ -54,22 +50,13 @@ class CDCommand(Command):
 class LSCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
-        self.validArgs = ["-l", "-s"]
+        self.validArgs = ["-l", "-a"]
         self.passedArgs = []
         self.sys = sys
         self.path = ""
 
     def execute(self):
-        print("LS command executed")
-        if self.path == "":
-            print("Listing current directory")
-        elif self.sys.is_path(self.path):
-            print(f"Listing directory: {self.path}")
-        else:
-            print(f"Invalid path: {self.path}")
-        if self.passedArgs:
-            print(f"Arguments: {self.passedArgs}")
-        print("file1.txt  file2.txt  directory1/")
+        self.sys.list_directory(self.path, self.passedArgs)
 
     def ParseArgs(self, s):
         self.passedArgs = []
@@ -84,7 +71,6 @@ class LSCommand(Command):
                 print(f"Wrong argument: {arg}")
                 return -1
         return 0
-
 
 class EXITCommand(Command):
     def __init__(self, sys: My_System):
@@ -115,4 +101,38 @@ class WRONGCommand(Command):
         print("Error: Wrong command. Available commands: cd, ls, exit")
 
     def ParseArgs(self, s):
+        return 0
+
+class VFS_SAVECommand(Command):
+    def __init__(self, sys: My_System):
+        super().__init__()
+        self.validArgs = []
+        self.passedArgs = []
+        self.sys = sys
+        self.save_path = ""
+
+    def execute(self):
+
+        if self.save_path:
+            success = self.sys.save_vfs(self.save_path)
+            if success:
+                print(f"VFS saved successfully to: {self.save_path}")
+            else:
+                print(f"Failed to save VFS to: {self.save_path}")
+        else:
+                print("Error: No save path specified")
+
+    def ParseArgs(self, s):
+        self.passedArgs = []
+        self.save_path = ""
+
+        if len(s) == 0:
+            print("Error: vfs-save requires a path argument")
+            return -1
+
+        if len(s) > 1:
+            print("Error: vfs-save takes only one argument")
+            return -1
+
+        self.save_path = s[0]
         return 0

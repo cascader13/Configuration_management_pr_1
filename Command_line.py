@@ -1,5 +1,5 @@
 import My_System
-from Command import CDCommand, LSCommand, EXITCommand, WRONGCommand
+from Command import CDCommand, LSCommand, EXITCommand, WRONGCommand, VFS_SAVECommand
 import os
 
 
@@ -7,17 +7,21 @@ class CommandLine:
     def __init__(self, sys: My_System):
         try:
             self.sys = sys
-            self.id = sys.User + "@" + sys.Comp + ":"
+            self.id = sys.User + "@" + sys.Comp + ":" + sys.current_path + "$"
             self.factory_command = {
                 'cd': CDCommand(sys),
                 'ls': LSCommand(sys),
                 'exit': EXITCommand(sys),
+                'vfs-save': VFS_SAVECommand(sys),
                 'wrong': WRONGCommand()
             }
-            self.commands = ["cd", "ls", "exit"]
+            self.commands = ["cd", "ls", "exit", "vfs-save"]
         except Exception as e:
             print(f"Error initializing CommandLine: {e}")
             raise
+
+    def update_prompt(self):
+        self.id = self.sys.User + "@" + self.sys.Comp + ":" + self.sys.current_path + "$"
 
     def execute_script_command(self, command_line):
         try:
@@ -46,6 +50,7 @@ class CommandLine:
                 return False
             else:
                 command_handler.execute()
+                self.update_prompt()
                 return True
 
         except Exception as e:
@@ -74,7 +79,6 @@ class CommandLine:
                 if len(s) > 1:
                     args = s[1:]
 
-
                 if command not in self.commands:
                     command_handler = self.factory_command["wrong"]
                 else:
@@ -84,6 +88,7 @@ class CommandLine:
                     print("Error: Invalid arguments")
                 else:
                     command_handler.execute()
+                    self.update_prompt()
 
             except KeyboardInterrupt:
                 print("\nExiting...")

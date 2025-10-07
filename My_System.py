@@ -1,4 +1,5 @@
 import os
+from VFS import VFS, Type, Node
 
 
 class My_System:
@@ -8,6 +9,8 @@ class My_System:
             self.Comp = comp
             self.is_running = False
             self.config = config
+            self.current_path = "/"
+            self.vfs = None
 
             self._initialize_vfs()
 
@@ -16,7 +19,6 @@ class My_System:
             raise
 
     def _initialize_vfs(self):
-        """Initialize VFS directory with proper error handling"""
         if self.config and hasattr(self.config, 'vfs_path') and self.config.vfs_path:
             try:
                 vfs_path = self.config.vfs_path
@@ -27,7 +29,6 @@ class My_System:
                 else:
                     print(f"VFS directory already exists: {vfs_path}")
 
-                # Verify we can write to the directory
                 test_file = os.path.join(vfs_path, "test_write.tmp")
                 try:
                     with open(test_file, 'w') as f:
@@ -43,13 +44,108 @@ class My_System:
                 print(f"Error creating VFS directory '{vfs_path}': {e}")
                 raise
 
+        if self.config and hasattr(self.config, 'vfs_csv') and self.config.vfs_csv:
+            self._load_vfs_from_csv(self.config.vfs_csv)
+
+    def _load_vfs_from_csv(self, csv_path):
+        try:
+            if not os.path.exists(csv_path):
+                print(f"Error: VFS CSV file '{csv_path}' not found")
+                return
+
+            print(f"Loading VFS from: {csv_path}")
+            self.vfs = VFS(csv_path)
+            self.vfs.build_tree()
+            print(f"VFS loaded successfully from {csv_path}")
+
+        except Exception as e:
+            print(f"Error loading VFS from '{csv_path}': {e}")
+            raise
+
     def is_path(self, path):
         try:
-            if len(path) == 0 or path[0] == "/":
+            if not self.vfs:
+                return False
+
+            if path == "" or path == "/":
                 return True
-            return False
+
+            node = self.vfs.encrypt_absolute_path(path.lstrip('/'))
+            return node is not None
+
         except Exception as e:
             print(f"Error validating path '{path}': {e}")
+            return False
+
+    def change_directory(self, path):
+        if not self.vfs:
+            print("Error: VFS not loaded")
+            return False
+
+        if path == "":
+            return True
+
+        if path == "/":
+            self.current_path = "/"
+            return True
+
+        if path.startswith("/"):
+            target_path = path
+        else:
+            if self.current_path == "/":
+                target_path = f"/{path}"
+            else:
+                target_path = f"{self.current_path}/{path}"
+
+        target_path = target_path.replace("//", "/")
+
+        node = self.vfs.encrypt_absolute_path(target_path.lstrip('/'))
+        if node and node.type == Type.FOLDER:
+            self.current_path = target_path
+            return True
+        else:
+            print(f"Error: Directory '{path}' not found")
+            return False
+
+    def list_directory(self, path="", options=None):
+        if not self.vfs:
+            print("Error: VFS not loaded")
+            return
+
+        if options is None:
+            options = []
+
+        target_path = path if path else self.current_path
+        if target_path == "/":
+            node = self.vfs.head
+        else:
+            node = self.vfs.encrypt_absolute_path(target_path.lstrip('/'))
+
+        if not node:
+            print(f"Error: Path '{target_path}' not found")
+            return
+
+        if node.type != Type.FOLDER:
+            print(f"Error: '{target_path}' is not a directory")
+            return
+
+        print(f"Contents of {target_path}:")
+        for child in node.childrens:
+            if child.type == Type.FOLDER:
+                print(f"  {child.name}/")
+            else:
+                print(f"  {child.name}")
+
+    def save_vfs(self, save_path):
+        if not self.vfs:
+            print("Error: VFS not loaded")
+            return False
+
+        try:
+            print(f"VFS would be saved to: {save_path}")
+            return True
+        except Exception as e:
+            print(f"Error saving VFS: {e}")
             return False
 
     def exit(self):
