@@ -2,7 +2,7 @@ import abc
 import My_System
 
 
-class Command(abc.ABC):
+class Command(abc.ABC): # абстрактный класс команды
     def __init__(self):
         self.validArgs = []
         self.passedArgs = []
@@ -103,7 +103,7 @@ class WRONGCommand(Command):
     def ParseArgs(self, s):
         return 0
 
-class VFS_SAVECommand(Command):
+class VFS_SAVECommand(Command): # Команда для сохранения VFS
     def __init__(self, sys: My_System):
         super().__init__()
         self.validArgs = []

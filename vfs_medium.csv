@@ -1,0 +1,13 @@
+/
+/bin
+/bin/ls
+/bin/cd
+/home
+/home/user1
+/home/user1/documents
+/home/user1/documents/doc1.pdf
+/home/user1/documents/doc2.docx
+/home/user1/.bashrc
+/var
+/var/log
+/var/log/system.log

@@ -8,7 +8,7 @@ class CommandLine:
         try:
             self.sys = sys
             self.id = sys.User + "@" + sys.Comp + ":" + sys.current_path + "$"
-            self.factory_command = {
+            self.factory_command = {  # фабрика
                 'cd': CDCommand(sys),
                 'ls': LSCommand(sys),
                 'exit': EXITCommand(sys),

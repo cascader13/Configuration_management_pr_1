@@ -8,7 +8,7 @@ python main.py --config-file config.toml
 echo.
 
 echo === Test 2: Command line parameters ===
-python main.py --vfs-path ./custom_vfs --startup-script ./custom_script.fs
+python main.py --vfs-path ./custom_vfs --startup-script ./custom_script.txt
 echo.
 
 echo === Test 3: Mixed mode ===

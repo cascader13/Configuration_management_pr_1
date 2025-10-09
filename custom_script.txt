@@ -1,0 +1,12 @@
+cd /home
+ls
+cd alex
+ls
+cd projects/project1
+ls
+cd /nonexistent
+ls /invalid/path
+vfs-save /tmp/backup.csv
+$HOME
+$USER
+exit
