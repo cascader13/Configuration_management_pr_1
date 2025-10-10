@@ -317,3 +317,275 @@ Press Ctrl+C to exit
 Alex@MYLAPTOP:/home$ cd user1
 Alex@MYLAPTOP:/home/user1$
 ```
+
+## Этап 4
+
+
+
+### Реализованный функционал
+
+1. **Сделать команды**: ls(просмотр директорию), cd(перемещение), uniq(просмотр уникальных значений в файле), head(просмотр файла), cal(календарь)
+2. **создать стартовый скрипт для тестов**
+
+### Пример
+
+```bash
+Running all configuration tests...
+
+=== Test 1: Config file ===
+=== Starting File System Emulator ===
+Loading configuration from: config.toml
+Loaded vfs_path from config: ./vfs_storage
+Loaded vfs_csv from config: vfs_complex.csv
+Loaded startup_script from config: ./startup_4.txt
+=== Emulator Configuration ===
+VFS Path: ./vfs_storage
+VFS CSV: vfs_complex.csv
+Startup Script: ./startup_4.txt
+Config File: config.toml
+==============================
+VFS directory already exists: ./vfs_storage
+Loading VFS from: vfs_complex.csv
+Added: /usr
+Parent:
+Child: usr
+Added: /usr/local
+Parent: usr
+Child: local
+Added: /usr/local/bin
+Parent: local
+Child: bin
+Added: /usr/local/bin/custom_app
+Parent: bin
+Child: custom_app
+Added: /usr/share
+Parent: usr
+Child: share
+Added: /usr/share/docs
+Parent: share
+Child: docs
+Added: /usr/share/docs/manual
+Parent: docs
+Child: manual
+Added: /usr/share/docs/manual/chapter1
+Parent: manual
+Child: chapter1
+Added: /usr/share/docs/manual/chapter1/section1.txt
+Parent: chapter1
+Child: section1.txt
+Added: /usr/share/docs/manual/chapter1/section2.txt
+Parent: chapter1
+Child: section2.txt
+Added: /home
+Parent:
+Child: home
+Added: /home/alex
+Parent: home
+Child: alex
+Added: /home/alex/projects
+Parent: alex
+Child: projects
+Added: /home/alex/projects/project1
+Parent: projects
+Child: project1
+Added: /home/alex/projects/project1/src
+Parent: project1
+Child: src
+Added: /home/alex/projects/project1/src/main.py
+Parent: src
+Child: main.py
+Added: /home/alex/projects/project1/src/section1.txt
+Parent: src
+Child: section1.txt
+Added: /home/alex/projects/project1/src/section2.txt
+Parent: src
+Child: section2.txt
+Added: /home/alex/projects/project1/README.md
+Parent: project1
+Child: README.md
+Added: /tmp
+Parent:
+Child: tmp
+Added: /var
+Parent:
+Child: var
+Added: /var/log
+Parent: var
+Child: log
+Added: /var/log/system.log
+Parent: log
+Child: system.log
+VFS loaded successfully from vfs_complex.csv
+=== Executing startup script: ./startup_4.txt ===
+Alex@MYLAPTOP:/$ ls
+Contents of /:
+  usr/
+  home/
+  tmp/
+  var/
+Alex@MYLAPTOP:/$ cd /home
+Alex@MYLAPTOP:/home$ ls -a
+Contents of /home:
+  alex/
+Alex@MYLAPTOP:/home$ cd alex/projects/project1
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+  src/
+  README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ head src/main.py
+import sys
+                          def main():
+                            print("Hello World")
+
+                          if __name__ == "__main__":
+                            main()
+Alex@MYLAPTOP:/home/alex/projects/project1$ head -n 3 src/utils.py
+ERROR: path home/alex/projects/project1/src/utils.py not exist
+Error: File 'src/utils.py' not found
+Error: Cannot read file 'src/utils.py'
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq src/utils.py
+ERROR: path home/alex/projects/project1/src/utils.py not exist
+Error: File 'src/utils.py' not found
+Error: Cannot read file 'src/utils.py'
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -c src/utils.py
+ERROR: path home/alex/projects/project1/src/utils.py not exist
+Error: File 'src/utils.py' not found
+Error: Cannot read file 'src/utils.py'
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -i src/section2.txt
+apple
+                               banana
+                               apple
+                               banana
+                               cherry
+                               apple
+                               date
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -d src/section1.txt
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -u src/section1.txt
+Line 1
+                               Line 2
+                               Line 3
+                               Line 4
+                               Line 5
+                               Line 6
+                               Line 7
+                               Line 8
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal
+    October 2025
+Mo Tu We Th Fr Sa Su
+       1  2  3  4  5
+ 6  7  8  9 10 11 12
+13 14 15 16 17 18 19
+20 21 22 23 24 25 26
+27 28 29 30 31
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal -3
+=== September 2025 ===
+   September 2025
+Mo Tu We Th Fr Sa Su
+ 1  2  3  4  5  6  7
+ 8  9 10 11 12 13 14
+15 16 17 18 19 20 21
+22 23 24 25 26 27 28
+29 30
+
+=== October 2025 ===
+    October 2025
+Mo Tu We Th Fr Sa Su
+       1  2  3  4  5
+ 6  7  8  9 10 11 12
+13 14 15 16 17 18 19
+20 21 22 23 24 25 26
+27 28 29 30 31
+
+=== November 2025 ===
+   November 2025
+Mo Tu We Th Fr Sa Su
+                1  2
+ 3  4  5  6  7  8  9
+10 11 12 13 14 15 16
+17 18 19 20 21 22 23
+24 25 26 27 28 29 30
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal -y
+                                  2025
+
+      January                   February                   March
+Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su
+       1  2  3  4  5                      1  2                      1  2
+ 6  7  8  9 10 11 12       3  4  5  6  7  8  9       3  4  5  6  7  8  9
+13 14 15 16 17 18 19      10 11 12 13 14 15 16      10 11 12 13 14 15 16
+20 21 22 23 24 25 26      17 18 19 20 21 22 23      17 18 19 20 21 22 23
+27 28 29 30 31            24 25 26 27 28            24 25 26 27 28 29 30
+                                                    31
+
+       April                      May                       June
+Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su
+    1  2  3  4  5  6                1  2  3  4                         1
+ 7  8  9 10 11 12 13       5  6  7  8  9 10 11       2  3  4  5  6  7  8
+14 15 16 17 18 19 20      12 13 14 15 16 17 18       9 10 11 12 13 14 15
+21 22 23 24 25 26 27      19 20 21 22 23 24 25      16 17 18 19 20 21 22
+28 29 30                  26 27 28 29 30 31         23 24 25 26 27 28 29
+                                                    30
+
+        July                     August                  September
+Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su
+    1  2  3  4  5  6                   1  2  3       1  2  3  4  5  6  7
+ 7  8  9 10 11 12 13       4  5  6  7  8  9 10       8  9 10 11 12 13 14
+14 15 16 17 18 19 20      11 12 13 14 15 16 17      15 16 17 18 19 20 21
+21 22 23 24 25 26 27      18 19 20 21 22 23 24      22 23 24 25 26 27 28
+28 29 30 31               25 26 27 28 29 30 31      29 30
+
+      October                   November                  December
+Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su      Mo Tu We Th Fr Sa Su
+       1  2  3  4  5                      1  2       1  2  3  4  5  6  7
+ 6  7  8  9 10 11 12       3  4  5  6  7  8  9       8  9 10 11 12 13 14
+13 14 15 16 17 18 19      10 11 12 13 14 15 16      15 16 17 18 19 20 21
+20 21 22 23 24 25 26      17 18 19 20 21 22 23      22 23 24 25 26 27 28
+27 28 29 30 31            24 25 26 27 28 29 30      29 30 31
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal 12 2024
+   December 2024
+Mo Tu We Th Fr Sa Su
+                   1
+ 2  3  4  5  6  7  8
+ 9 10 11 12 13 14 15
+16 17 18 19 20 21 22
+23 24 25 26 27 28 29
+30 31
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal 2 2023
+   February 2023
+Mo Tu We Th Fr Sa Su
+       1  2  3  4  5
+ 6  7  8  9 10 11 12
+13 14 15 16 17 18 19
+20 21 22 23 24 25 26
+27 28
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ vfs-save /tmp/backup_vfs.csv
+VFS would be saved to: /tmp/backup_vfs.csv
+VFS saved successfully to: /tmp/backup_vfs.csv
+Alex@MYLAPTOP:/home/alex/projects/project1$ cd /nonexistent/path
+ERROR: path nonexistent/path not exist
+Error: Directory '/nonexistent/path' not found
+Failed to change directory to: /nonexistent/path
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls /invalid/path
+ERROR: path invalid/path not exist
+Error: Path '/invalid/path' not found
+Alex@MYLAPTOP:/home/alex/projects/project1$ head nonexistent.txt
+ERROR: path home/alex/projects/project1/nonexistent.txt not exist
+Error: File 'nonexistent.txt' not found
+Error: Cannot read file 'nonexistent.txt'
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -x invalid_option.txt
+Wrong argument: -x
+Error: Invalid arguments
+Error at line 38: script execution interrupted
+=== Startup script execution failed ===
+
+=== Starting interactive mode ===
+Available commands: cd, ls, exit
+Example: ls -l /home
+Press Ctrl+C to exit
+
+Alex@MYLAPTOP:/home/alex/projects/project1$
+```    

@@ -1,5 +1,5 @@
 import My_System
-from Command import CDCommand, LSCommand, EXITCommand, WRONGCommand, VFS_SAVECommand
+from Command import CDCommand, LSCommand, EXITCommand, WRONGCommand, VFS_SAVECommand, UNIQCommand, HEADCommand, CALCommand
 import os
 
 
@@ -13,9 +13,12 @@ class CommandLine:
                 'ls': LSCommand(sys),
                 'exit': EXITCommand(sys),
                 'vfs-save': VFS_SAVECommand(sys),
+                'uniq': UNIQCommand(sys),
+                'head': HEADCommand(sys),
+                'cal': CALCommand(sys),
                 'wrong': WRONGCommand()
             }
-            self.commands = ["cd", "ls", "exit", "vfs-save"]
+            self.commands = ["cd", "ls", "exit", "vfs-save", "uniq", "head", "cal"]
         except Exception as e:
             print(f"Error initializing CommandLine: {e}")
             raise

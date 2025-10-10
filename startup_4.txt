@@ -1,0 +1,47 @@
+# === Phase 4: Testing New Commands ===
+# Testing VFS navigation
+
+ls
+cd /home
+ls -a
+cd alex/projects/project1
+ls
+
+# Testing file content commands
+
+head src/main.py
+head -n 3 src/utils.py
+
+
+uniq src/utils.py
+uniq -c src/utils.py
+uniq -i src/section2.txt
+uniq -d src/section1.txt
+uniq -u src/section1.txt
+
+
+cal
+cal -3
+cal -y
+cal 12 2024
+cal 2 2023
+
+# Testing VFS operations
+
+vfs-save /tmp/backup_vfs.csv
+
+# Testing error handling
+
+cd /nonexistent/path
+ls /invalid/path
+head nonexistent.txt
+uniq -x invalid_option.txt
+cal 13 2024
+cal invalid
+
+# Testing environment variables
+
+$HOME
+$USER
+
+exit
