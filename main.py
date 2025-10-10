@@ -13,9 +13,9 @@ def main():
         config = Config()
         sys_obj = My_System("Alex", "MYLAPTOP", config)
         if config.startup_script:
-            execute_startup_script(sys_obj, config.startup_script)
+            execute_startup_script(sys_obj, config.startup_script)  #Сначала отрабатывается скрипт
 
-        start_interactive_mode(sys_obj)
+        start_interactive_mode(sys_obj)                             # После пользователь может ввести свои команды
 
     except KeyboardInterrupt:
         print("\nProgram interrupted by user")
@@ -73,7 +73,7 @@ def execute_startup_script(sys_obj, script_path):
 
 def start_interactive_mode(sys_obj):
     print("\n=== Starting interactive mode ===")
-    print("Available commands: cd, ls, exit")
+    print("Available commands: cd, ls, uniq, head, cal, rm, exit")
     print("Example: ls -l /home")
     print("Press Ctrl+C to exit\n")
 

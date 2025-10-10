@@ -4,21 +4,21 @@ from datetime import datetime
 import calendar
 
 
-class Command(abc.ABC):  # абстрактный класс команды
-    def __init__(self):
+class Command(abc.ABC):         # абстрактный класс команды
+    def __init__(self):         # Инициализация команды
         self.validArgs = []
         self.passedArgs = []
 
-    def execute(self):
+    def execute(self):          # вызов команды
         pass
 
-    def ParseArgs(self, s):
+    def ParseArgs(self, s):     # Парсинг аргументов
         if s not in self.validArgs:
             return -1
         self.passedArgs = s
         return 0
 
-
+"""Команда CD(перемещение) Аргументы: Путь к директории(относительный или абсолютный)"""
 class CDCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
@@ -48,7 +48,7 @@ class CDCommand(Command):
                 return -1
         return 0
 
-
+"""Команда LS(Просмотр директории) Аргументы: Путь к директории(относительный или абсолютный), -a - отображение скрытых файлов(начинающихся на точку)"""
 class LSCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
@@ -74,7 +74,7 @@ class LSCommand(Command):
                 return -1
         return 0
 
-
+"""Команда EXIT(Выход из программы)"""
 class EXITCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
@@ -93,7 +93,7 @@ class EXITCommand(Command):
             return -1
         return 0
 
-
+"""Команда, которая отрабатываются при вводе пользователем несуществующей команды"""
 class WRONGCommand(Command):
     def __init__(self):
         super().__init__()
@@ -101,13 +101,13 @@ class WRONGCommand(Command):
         self.passedArgs = []
 
     def execute(self):
-        print("Error: Wrong command. Available commands: cd, ls, exit, uniq, head, cal, vfs-save")
+        print("Error: Wrong command. Available commands: cd, ls, exit, uniq, head, cal, vfs-save, rm")
 
     def ParseArgs(self, s):
         return 0
 
-
-class VFS_SAVECommand(Command):  # Команда для сохранения VFS(шаблон)
+"""Команда VFS_SAVE(Сохранение состояния) заглушка"""
+class VFS_SAVECommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
         self.validArgs = []
@@ -141,8 +141,9 @@ class VFS_SAVECommand(Command):  # Команда для сохранения VF
         self.save_path = s[0]
         return 0
 
-
-class UNIQCommand(Command): # показывает только уникальные строки в файле
+"""Команда UNIQ(отображает уникальные строки из входных данных) аргументы: -i игнорирование регистра входных данных, -c подсчёт того, сколько раз строка встречается в входных данных
+-d отображает только те строки, которые повторяются, -u отображает только уникальные строки"""
+class UNIQCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
         self.validArgs = ["-i", "-c", "-d", "-u"]
@@ -156,7 +157,7 @@ class UNIQCommand(Command): # показывает только уникальн
             print("Error: No file specified")
             return
 
-        # Получаем содержимое файла из VFS
+        # Получаем содержимое файла из VFS(генерируются в коде)
         content = self.sys.get_file_content(self.file_path)
         if content is None:
             print(f"Error: Cannot read file '{self.file_path}'")
@@ -230,8 +231,8 @@ class UNIQCommand(Command): # показывает только уникальн
 
         return 0
 
-
-class HEADCommand(Command): # Выводит файл в консоль
+"""Команда HEAD(отображает первые строки входных данных) Аргументы: -n показывает заданное кол-во строк"""
+class HEADCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
         self.validArgs = ["-n"]
@@ -245,7 +246,7 @@ class HEADCommand(Command): # Выводит файл в консоль
             print("Error: No file specified")
             return
 
-        # Получаем содержимое файла из VFS(файлы создаются в my system)
+        # Получаем содержимое файла из VFS(файлы генерируются в коде)
         content = self.sys.get_file_content(self.file_path)
         if content is None:
             print(f"Error: Cannot read file '{self.file_path}'")
@@ -270,7 +271,7 @@ class HEADCommand(Command): # Выводит файл в консоль
                     try:
                         self.line_count = int(s[i + 1])
                         self.passedArgs.append(arg)
-                        i += 1  # Skip next argument
+                        i += 1
                     except ValueError:
                         print(f"Error: Invalid number for -n option: {s[i + 1]}")
                         return -1
@@ -294,7 +295,8 @@ class HEADCommand(Command): # Выводит файл в консоль
 
         return 0
 
-# Календарь
+
+"""Команда CAL(календарь) аргументы Месяц год, -y отображает календарь текущего года, -3 - отображает календарь с предыдущим, текущим и следующим месяцем"""
 class CALCommand(Command):
     def __init__(self, sys: My_System):
         super().__init__()
@@ -389,6 +391,47 @@ class CALCommand(Command):
         # Проверка конфликта
         if "-y" in self.passedArgs and self.month is not None:
             print("Error: Cannot specify month with -y option")
+            return -1
+
+        return 0
+
+'''Команда RM(удаление) аргументы: -r рекурсивное удаление, -f удаление без предупреждения, -i запрашивание подтверждения '''
+class RMCommand(Command):
+    def __init__(self, sys: My_System):
+        super().__init__()
+        self.validArgs = ["-r", "-f", "-i"]
+        self.passedArgs = []
+        self.sys = sys
+        self.paths = []
+
+    def execute(self):
+        if not self.paths:
+            print("Error: No paths specified")
+            return
+
+        for path in self.paths:
+            success = self.sys.remove_path(path, self.passedArgs)
+            if success:
+                print(f"Successfully removed: {path}")
+            else:
+                print(f"Failed to remove: {path}")
+
+    def ParseArgs(self, s):
+        self.passedArgs = []
+        self.paths = []
+
+        for arg in s:
+            if arg[0] == "-":
+                if arg in self.validArgs:
+                    self.passedArgs.append(arg)
+                else:
+                    print(f"Wrong argument: {arg}")
+                    return -1
+            else:
+                self.paths.append(arg)
+
+        if not self.paths:
+            print("Error: No paths specified")
             return -1
 
         return 0

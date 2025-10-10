@@ -19,7 +19,7 @@ class Config:
             print(f"Configuration error: {e}")
             sys.exit(1)
 
-    def _parse_arguments(self):
+    def _parse_arguments(self):         # Парсинг начальных аргументов
         try:
             parser = argparse.ArgumentParser(description='File system emulator')
 

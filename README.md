@@ -588,4 +588,225 @@ Example: ls -l /home
 Press Ctrl+C to exit
 
 Alex@MYLAPTOP:/home/alex/projects/project1$
-```    
+```
+
+## Этап 5
+
+### Реализованный функционал
+
+*Команда для удаления* rm
+
+### Пример
+
+```bash
+Running all configuration tests...
+
+=== Test 1: Config file ===
+=== Starting File System Emulator ===
+Loading configuration from: config.toml
+Loaded vfs_path from config: ./vfs_storage
+Loaded vfs_csv from config: vfs_complex.csv
+Loaded startup_script from config: ./startup_5.txt
+=== Emulator Configuration ===
+VFS Path: ./vfs_storage
+VFS CSV: vfs_complex.csv
+Startup Script: ./startup_5.txt
+Config File: config.toml
+==============================
+VFS directory already exists: ./vfs_storage
+Loading VFS from: vfs_complex.csv
+Added: /usr
+Parent:
+Child: usr
+Added: /usr/local
+Parent: usr
+Child: local
+Added: /usr/local/bin
+Parent: local
+Child: bin
+Added: /usr/local/bin/custom_app
+Parent: bin
+Child: custom_app
+Added: /usr/share
+Parent: usr
+Child: share
+Added: /usr/share/docs
+Parent: share
+Child: docs
+Added: /usr/share/docs/manual
+Parent: docs
+Child: manual
+Added: /usr/share/docs/manual/chapter1
+Parent: manual
+Child: chapter1
+Added: /usr/share/docs/manual/chapter1/section1.txt
+Parent: chapter1
+Child: section1.txt
+Added: /usr/share/docs/manual/chapter1/section2.txt
+Parent: chapter1
+Child: section2.txt
+Added: /home
+Parent:
+Child: home
+Added: /home/alex
+Parent: home
+Child: alex
+Added: /home/alex/projects
+Parent: alex
+Child: projects
+Added: /home/alex/projects/project1
+Parent: projects
+Child: project1
+Added: /home/alex/projects/project1/src
+Parent: project1
+Child: src
+Added: /home/alex/projects/project1/src/main.py
+Parent: src
+Child: main.py
+Added: /home/alex/projects/project1/src/section1.txt
+Parent: src
+Child: section1.txt
+Added: /home/alex/projects/project1/src/section2.txt
+Parent: src
+Child: section2.txt
+Added: /home/alex/projects/project1/README.md
+Parent: project1
+Child: README.md
+Added: /tmp
+Parent:
+Child: tmp
+Added: /var
+Parent:
+Child: var
+Added: /var/log
+Parent: var
+Child: log
+Added: /var/log/system.log
+Parent: log
+Child: system.log
+VFS loaded successfully from vfs_complex.csv
+=== Executing startup script: ./startup_5.txt ===
+Alex@MYLAPTOP:/$ ls
+Contents of /:
+  usr/
+  home/
+  tmp/
+  var/
+Alex@MYLAPTOP:/$ cd /home
+Alex@MYLAPTOP:/home$ ls -a
+Contents of /home:
+  alex/
+Alex@MYLAPTOP:/home$ cd alex/projects/project1
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+  src/
+  README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ head src/main.py
+import sys
+                          def main():
+                            print("Hello World")
+
+                          if __name__ == "__main__":
+                            main()
+Alex@MYLAPTOP:/home/alex/projects/project1$ head -n 3 src/section1.txt
+Line 1
+                               Line 2
+                               Line 3
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq src/section2.txt
+apple
+                               banana
+                               Apple
+                               banana
+                               cherry
+                               APPLE
+                               date
+Alex@MYLAPTOP:/home/alex/projects/project1$ uniq -c src/section2.txt
+   1 apple
+   1                                banana
+   1                                Apple
+   1                                banana
+   1                                cherry
+   1                                APPLE
+   1                                date
+Alex@MYLAPTOP:/home/alex/projects/project1$ cal -3
+=== September 2025 ===
+   September 2025
+Mo Tu We Th Fr Sa Su
+ 1  2  3  4  5  6  7
+ 8  9 10 11 12 13 14
+15 16 17 18 19 20 21
+22 23 24 25 26 27 28
+29 30
+
+=== October 2025 ===
+    October 2025
+Mo Tu We Th Fr Sa Su
+       1  2  3  4  5
+ 6  7  8  9 10 11 12
+13 14 15 16 17 18 19
+20 21 22 23 24 25 26
+27 28 29 30 31
+
+=== November 2025 ===
+   November 2025
+Mo Tu We Th Fr Sa Su
+                1  2
+ 3  4  5  6  7  8  9
+10 11 12 13 14 15 16
+17 18 19 20 21 22 23
+24 25 26 27 28 29 30
+
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+  src/
+  README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm src/section1.txt
+Removed: src/section1.txt
+Successfully removed: src/section1.txt
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm src/section2.txt
+Removed: src/section2.txt
+Successfully removed: src/section2.txt
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+  src/
+  README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm src
+Error: 'src' is a non-empty directory (use -r to remove directories recursively)
+Failed to remove: src
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm -r src
+Removed: src
+Successfully removed: src
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+  README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm -i README.md
+Remove 'README.md'? [y/N] y
+Removed: README.md
+Successfully removed: README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm -f README.md
+ERROR: path home/alex/projects/project1/README.md not exist
+Error: Path 'README.md' not found
+Failed to remove: README.md
+Alex@MYLAPTOP:/home/alex/projects/project1$ ls
+Contents of /home/alex/projects/project1:
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm nonexistent.txt
+ERROR: path home/alex/projects/project1/nonexistent.txt not exist
+Error: Path 'nonexistent.txt' not found
+Failed to remove: nonexistent.txt
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm -r /nonexistent
+ERROR: path nonexistent not exist
+Error: Path '/nonexistent' not found
+Failed to remove: /nonexistent
+Alex@MYLAPTOP:/home/alex/projects/project1$ rm /  # Should fail - cannot remove root
+Wrong argument: -
+Error: Invalid arguments
+Error at line 34: script execution interrupted
+=== Startup script execution failed ===
+
+=== Starting interactive mode ===
+Available commands: cd, ls, uniq, head, cal, rm, exit
+Example: ls -l /home
+Press Ctrl+C to exit
+
+Alex@MYLAPTOP:/home/alex/projects/project1$
+```

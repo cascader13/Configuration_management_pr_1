@@ -1,0 +1,45 @@
+# === Phase 5: Testing RM Command ===
+# Testing VFS navigation
+ls
+cd /home
+ls -a
+cd alex/projects/project1
+ls
+
+# Testing file operations
+head src/main.py
+head -n 3 src/section1.txt
+
+uniq src/section2.txt
+uniq -c src/section2.txt
+
+
+cal -3
+
+
+ls
+rm src/section1.txt
+rm src/section2.txt
+ls
+rm src
+rm -r src
+ls
+rm -i README.md
+rm -f README.md
+ls
+
+# Testing error handling with RM
+rm nonexistent.txt
+rm -r /nonexistent
+rm /  # Should fail - cannot remove root
+rm -f invalid_file.txt
+
+# Testing VFS operations
+vfs-save /tmp/backup_phase5.csv
+
+# Testing environment variables
+$HOME
+$USER
+
+echo "=== All Phase 5 tests completed ==="
+exit

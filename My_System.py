@@ -186,10 +186,82 @@ class My_System:
                             print("Hello World")
 
                           if __name__ == "__main__":
-                            main()"""
+                            main()""",
+            "system.log": """[INFO] System started
+[ERROR] Disk full
+[INFO] Backup completed
+[WARNING] Memory usage high"""
         }
 
         return test_contents.get(filename, f"Test content for {filename}\nLine 1\nLine 2\nLine 2\nLine 3")
+
+    def remove_path(self, path, options=None):
+        """Удалить файл или директорию из VFS"""
+        if not self.vfs:
+            print("Error: VFS not loaded")
+            return False
+
+        if options is None:
+            options = []
+
+        if not path.startswith("/"):
+            if self.current_path == "/":
+                absolute_path = f"/{path}"
+            else:
+                absolute_path = f"{self.current_path}/{path}"
+        else:
+            absolute_path = path
+
+        node = self.vfs.encrypt_absolute_path(absolute_path.lstrip('/'))
+        if not node:
+            print(f"Error: Path '{path}' not found")
+            return False
+
+        if node == self.vfs.head:
+            print("Error: Cannot remove root directory")
+            return False
+
+        current_node = self.vfs.encrypt_absolute_path(self.current_path.lstrip('/'))
+
+        if current_node == node:
+            print("Error: Cannot remove current directory")
+            return False
+
+
+        if self._is_child_of(current_node, node):
+            print("Error: Cannot remove parent directory of current directory")
+            return False
+
+        if node.type == Type.FOLDER and node.childrens and "-r" not in options:
+            print(f"Error: '{path}' is a non-empty directory (use -r to remove directories recursively)")
+            return False
+
+        if "-i" in options:
+            response = input(f"Remove '{path}'? [y/N] ").strip().lower()
+            if response != 'y' and response != 'yes':
+                print("Operation cancelled")
+                return False
+
+        try:
+            if node.parent:
+                node.parent.childrens.remove(node)
+                print(f"Removed: {path}")
+                return True
+            else:
+                print(f"Error: Cannot remove node without parent")
+                return False
+        except Exception as e:
+            print(f"Error removing '{path}': {e}")
+            return False
+
+    def _is_child_of(self, child, parent):
+
+        current = child
+        while current and current.parent:
+            if current.parent == parent:
+                return True
+            current = current.parent
+        return False
 
     def save_vfs(self, save_path):
         if not self.vfs:
